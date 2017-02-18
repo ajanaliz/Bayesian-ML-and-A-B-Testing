@@ -22,11 +22,11 @@ from scipy.stats import chi2, chi2_contingency
 
 
 class DataGenerator:
-  def __init__(self, p1, p2):
+  def __init__(self, p1, p2): # p1 and p2 are probability of click for group 1 and group 2.
     self.p1 = p1
     self.p2 = p2
 
-  def next(self):
+  def next(self): # returns the result of weather or not a person clicked on advertisement 1 or a person clicked on advertisement 2.
     click1 = 1 if (np.random.random() < self.p1) else 0
     click2 = 1 if (np.random.random() < self.p2) else 0
     return click1, click2
@@ -40,21 +40,39 @@ def get_p_value(T):
   return p
 
 
+"""
+p1 = P(click for group 1)
+p2 = P(click for group 2)
+N = number of samples
+"""
 def run_experiment(p1, p2, N):
   data = DataGenerator(p1, p2)
   p_values = np.empty(N)
   T = np.zeros((2, 2)).astype(np.float32)
-  for i in xrange(N):
+  for i in xrange(N): # loop through each trial.
     c1, c2 = data.next()
-    T[0,c1] += 1
+	# this puts click in the second column and no click in the first column, but it doesnt really matter which is which.
+	T[0,c1] += 1
     T[1,c2] += 1
     # ignore the first 10 values
-    if i < 10:
+    if i < 10: # since we're dividing by the row sums and the column sums, --> so if any of those are 0, we cannot calculate the chi-squared test statistic. 
       p_values[i] = None
     else:
       p_values[i] = get_p_value(T)
   plt.plot(p_values)
+  # also plot the threshold, alpha:
   plt.plot(np.ones(N)*0.05)
   plt.show()
 
 run_experiment(0.1, 0.11, 20000)
+
+
+"""after running, you see that for different runs, we get different
+results. so we now know that the p value is problematic, sometimes
+it goes below the significance threshold and then back up and vice versa. 
+set both means to be exactly the same, and changing the variances to see 
+if you can get a significant p-value, even if the two groups are equal.
+remember that the p-value should be below the significance threshold."""
+
+
+
