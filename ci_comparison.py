@@ -1,6 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import beta, norm
+"""here we're going to answer the question, just how accurate
+was the confidence interval we derived earlier? in particular,
+we're going to visualize the approximated gaussian that results
+from the central limit theorem, and compare that to the bayesian
+beta posterior."""
+
 
 T = 501 # number of coin tosses
 true_ctr = 0.5
